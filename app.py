@@ -140,6 +140,22 @@ def save_img():
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
+# -------------------------  유저 페이지로 이동 ----------------------------------------------------
+
+@app.route('/modified_profile')
+def modified_profile():
+    return render_template('userpage.html')
+
+# -------------------------  닉네임 가져오기    ----------------------------------------------------
+
+@app.route('/find_nickname', methods=['POST'])
+def find_nickname():
+    your_nickname = list(db.users.find({}, {'_id': False}))
+    return jsonify({'get_nick': your_nickname})
+
+
+# -------------------------          ----------------------------------------------------
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
