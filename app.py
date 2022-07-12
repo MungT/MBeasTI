@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 # 파일 단위를 넘어서 변수를 가져올 수 있는 패키지
 import os
 
+# import certifi
+
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from pymongo import MongoClient
@@ -34,7 +36,7 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 client = MongoClient(MONGODB_URL)
 db = client.M_Beast_I
-
+db = client.MBTI
 
 #################################
 ##  HTML을 주는 부분             ##
@@ -139,7 +141,32 @@ def save_img():
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
+# -------------------------          ----------------------------------------------------
+
+# ------------------------- 원호님 영역 ----------------------------------------------------
+@app.route('/result')
+def result():
+    return render_template('result.html')
+# -------------------------          ----------------------------------------------------    
+    
+@app.route('/commentAction', methods=['POST'])
+def commentAction():
+    comment_receive = request.form['txt']
+    print(comment_receive)
+    doc={
+        'comment_receive':comment_receive
+    }
+    db.comment.insert_one(doc)
+    return jsonify({'msg': '등록완료'})  
+# -------------------------          ----------------------------------------------------    
+    
+@app.route('/getComment', methods=['GET'])
+def getComment():
+    # comment_receive = request.agrs.get['txt']
+    all_comment = list(db.comment.find({},{'_id':False}))
+    return jsonify({'msg': all_comment})
 
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
+
