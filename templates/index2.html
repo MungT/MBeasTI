@@ -40,8 +40,7 @@
             box-shadow: 0px 0px 3px 0px gray;
 
         }
-
-        .input-group mb-3 {
+        .input-group mb-3{
             margin: 350px 350px 350px 350px;
         }
 
@@ -65,23 +64,17 @@
 
 
     </style>
-
-
     <script>
-        function yes1() {
-            localStorage.setItem("key1", 'E')
-            window.location.href = "/index2"
-
+        function yes2() {
+            localStorage.setItem("key2", 'S')
+            window.location.href = "/index3"
         }
 
-        function no1() {
-
-            localStorage.setItem("key1", 'I')
-            window.location.href = "/index2"
+        function no2() {
+           localStorage.setItem("key2", 'N')
+            window.location.href = "/index3"
         }
-
     </script>
-
 </head>
 
 <body>
@@ -91,21 +84,15 @@
 </div>
 <div class="wrap">
     <h1 class="title">M BeasT I</h1>
-    <tr></tr>
-    <!--    <div class="input-group mb-3">-->
-    <!--        <span class="input-group-text">닉네임</span>-->
-    <!--        <input id="name" type="text" class="form-control">-->
-    <!--    </div>-->
+
 
     <div class="survey">
-        사람들과 만나는 것이 즐겁다
+        상상하는 것을 좋아한다
     </div>
     <div class="answer">
-        <button type="button" class="btn btn-primary btn-lg" onclick="yes1()">Yes</button>
-        <button type="button" class="btn btn-secondary btn-lg" style="margin-left: 350px;" onclick="no1()">No</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="yes2()">Yes</button>
+        <button type="button" class="btn btn-secondary btn-lg" style="margin-left: 350px;" onclick="no2()">No</button>
     </div>
-
-    </p>
 </div>
 
 </body>
