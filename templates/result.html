@@ -1,81 +1,93 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Black+And+White+Picture&family=Black+Han+Sans&family=Nanum+Brush+Script&family=Nanum+Myeongjo&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+  <link rel="stylesheet" href="../static/css/result.css">
 
-    <link href="https://fonts.googleapis.com/css2?family=Black+And+White+Picture&family=Black+Han+Sans&family=Nanum+Brush+Script&family=Nanum+Myeongjo&display=swap"
-          rel="stylesheet">
-
-    <title>MBeasTI | Home</title>
-    <style>
-        /*배경시 ctrl + /*/
-        /*body {*/
-        /*    background-image: url(https://cdn.pixabay.com/photo/2017/01/14/12/59/iceland-1979445_960_720.jpg);*/
-        /*    background-size: cover;*/
-        /*    background-position: unset;*/
-        /*    background-repeat: no-repeat;*/
-
-        /*}*/
-
-        .title {
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 400%;
-            text-align: center;
-        }
-
-        .survey {
-            text-align: center;
-
-            height: 500px;
-            width: 700px;
-            margin: 40px auto auto auto;
-            padding: 20px;
-            box-shadow: 0px 0px 3px 0px gray;
-
-        }
-
-        .wrap {
-            width: 1000px;
-            height: 1000px;
-            margin: 110px auto;
-            padding: 20px;
-            box-shadow: 0px 0px 3px 0px gray;
-        }
-
-        .answer > button {
-            width: 200px;
-            height: 100px;
-        }
-
-        .survey >
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script defer src="../static/js/result.js"></script>
 
 
-    </style>
+  <title>MBeasTI | Home</title>
+  <style>
+      .title {
+          font-family: 'Black Han Sans', sans-serif;
+          font-size: 400%;
+          text-align: center;
+      }
+  </style>
 </head>
 
-<body>
-    <div class="wrap">
-        <h1 class="title">M BeasT I</h1>
-        <div class="survey">
-            <div style="height: 300px; padding: inherit">
-                <img src="https://img.huffingtonpost.com/asset/5f5a80db1e0000260c475684.jpeg?ops=scalefit_960_noupscale" style="max-height: 100%;">
-            </div>
-            <div style="height: 140px; margin-top: 20px">
-                <input class="form-control" type="text" value="댓글" aria-label="readonly input example" readonly>
-            </div>
-        </div>
-    </div>
 
+<body>
+
+  <div class="content-wrap">
+    <h1 class="title">M BeasT I</h1>
+    <section class="section01">
+      <div class="container">
+        <h2><span>ENTJ</span>을(를) 위한 동물 추천</h2>
+        <figure>
+          <img src="../static/img/entj.jpg" alt="entj">
+          <figcaption>
+            <p>ENTJ 유형 특징은 천성적으로 타고난 리더입니다.</p>
+            <p>이 유형에 속하는 사람은 넘치는 카리스마와 자신감으로 공통의 목표 실현을 위해 다른 이들을 이끌고 진두지휘합니다.</p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section02">
+      <div class="container">
+        <h3 class="hidden">댓글기능</h3>
+        <div class="section02-write-box">
+          <textarea class="comment" rows="5" cols="125" placeholder="댓글 내용을 입력하세요."></textarea>
+          <button class="button is-dark submit">등록</button>
+        </div>
+        <div class="box comment-list">
+<!--          <article class="media">-->
+<!--            <div class="media-left">-->
+<!--              <figure class="image is-64x64">-->
+<!--                <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">-->
+<!--              </figure>-->
+<!--            </div>-->
+<!--            <div class="media-content">-->
+<!--              <div class="content">-->
+<!--                <p>-->
+<!--                  <strong>John Smith</strong> <small>@johnsmith</small> <small>31m</small>-->
+<!--                  <br>-->
+<!--                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla egestas. Nullam condimentum luctus turpis.-->
+<!--                </p>-->
+<!--                <div class="field is-grouped">-->
+<!--                  <p class="control"><button class="button is-link">Update</button></p>-->
+<!--                  <p class="control"><button class="button is-danger">Delete</button></p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </article>-->
+        </div>
+      </div>
+    </section>
+
+    <section class="section03">
+      <div class="container">
+<!--        <h3></h3>-->
+        <figure>
+          <img src="../static/img/thumbnail.png" alt="thumbnail01"/>
+        </figure>
+        <figure>
+          <img src="../static/img/thumbnail.png" alt="thumbnail01"/>
+        </figure>
+        <figure>
+          <img src="../static/img/thumbnail.png" alt="thumbnail01"/>
+        </figure>
+      </div>
+    </section>
+  </div>
 
 </body>
-
 </html>

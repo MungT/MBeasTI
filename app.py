@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 # 파일 단위를 넘어서 변수를 가져올 수 있는 패키지
 import os
 
+# import certifi
+
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from pymongo import MongoClient
@@ -34,7 +36,7 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 client = MongoClient(MONGODB_URL)
 db = client.M_Beast_I
-
+db = client.MBTI
 
 #################################
 ##  HTML을 주는 부분             ##
@@ -95,6 +97,7 @@ def sign_in():
 # ------------------------- 회원가입 정보 DB에 저장 -----------------------------------------
 @app.route('/sign_up/save', methods=['POST'])
 def sign_up():
+    mbti_receive = request.form['MBTI_give']
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
     nickname_receive = request.form['nickname_give']
@@ -104,7 +107,7 @@ def sign_up():
         "password": password_hash,  # 비밀번호
         "nickname": nickname_receive,  # 닉네임
         "profile_name": username_receive,  # 프로필 이름 기본값은 아이디
-        "result_mbti": "", # <- 이 자리가 mbti DB 자리 입니다.
+        "result_mbti": mbti_receive, # <- 이 자리가 mbti DB 자리 입니다.
         "profile_pic": "",  # 프로필 사진 파일 이름
         "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
@@ -139,6 +142,59 @@ def save_img():
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
+# -------------------------          ----------------------------------------------------
+
+# ------------------------- 원호님 영역 ----------------------------------------------------
+@app.route('/result')
+def result():
+    return render_template('result.html')
+# -------------------------          ----------------------------------------------------    
+    
+@app.route('/commentAction', methods=['POST'])
+def commentAction():
+    comment_receive = request.form['txt']
+    print(comment_receive)
+    doc={
+        'comment_receive':comment_receive
+    }
+    db.comment.insert_one(doc)
+    return jsonify({'msg': '등록완료'})  
+# -------------------------          ----------------------------------------------------    
+    
+@app.route('/getComment', methods=['GET'])
+def getComment():
+    # comment_receive = request.agrs.get['txt']
+    all_comment = list(db.comment.find({},{'_id':False}))
+    return jsonify({'msg': all_comment})
+
+#---------------------------------------------------------------------------------------
+# MBTI 검사 관련
+
+@app.route('/index')
+def index():
+
+    return render_template("index.html")
+
+@app.route('/index2')
+def index2():
+
+    return render_template("index2.html")
+
+@app.route('/index3')
+def index3():
+
+    return render_template("index3.html")
+
+@app.route('/index4')
+def index4():
+
+    return render_template("index4.html")
+
+@app.route('/index5')
+def index5():
+
+    return render_template("index5.html")
+
 
 # -------------------------  유저 페이지로 이동 ----------------------------------------------------
 
@@ -159,3 +215,4 @@ def find_nickname():
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
+
