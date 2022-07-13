@@ -19,32 +19,28 @@
     <title>Title</title>
     <script>
         let first = localStorage.getItem("key1");
-
         let second = localStorage.getItem("key2");
-
         let third = localStorage.getItem("key3");
-
         let fourth = localStorage.getItem("key4");
-
         let MBTI = first + second + third + fourth
-
         console.log(MBTI)
-
-        $.ajax({
-                type: 'POST',
-                url: '/index5',
-                data: { MBTI_give : MBTI,}
+        mbti_toss(MBTI);
+        function mbti_toss(MBTI){
+                $.ajax({
+                type: "POST",
+                url: "/db_mbti/save",
+                data: {mbti_give: MBTI},
+                success: function (response) {
+                    window.location.replace("/result")
+                    }
 
             });
-
+}
     </script>
 </head>
 <body>
 
 <div>
-    <script>
-        document.write(MBTI)
-    </script>
 </div>
 
 </body>
