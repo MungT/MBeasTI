@@ -63,14 +63,6 @@ def home():
         return redirect(url_for("index"))
 
 
-user_info = db.users.find_one({"username": "MBTI123"}, {"_id": False})
-user_mbti = user_info['result_mbti']
-print(user_mbti)
-# if user_mbti == "":
-#     print("개같이 공백임")
-
-
-
 
 
 @app.route('/login')
@@ -134,7 +126,21 @@ def sign_up():
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
-# -------------------------    -------------------------------------------------------
+# ------------------------- MBTI 결과 DB 저장용    --------------------------------------
+# 여긴 성공!
+## 위에 포스트로는 실패했어요 ...
+@app.route('/db_mbti/save', methods=['POST'])
+def db_upload():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    mbti_receive = request.form['mbti_give']
+
+    db.users.update_one({'username': payload['id']}, {'$set': {'result_mbti': mbti_receive}})
+    return jsonify({'result': 'success'})
+
+
+
+
 
 # ------------------------- 중복체크 ----------------------------------------------------
 @app.route('/sign_up/check_dup', methods=['POST'])
@@ -224,7 +230,6 @@ def index5():
     return render_template("index5.html")
 
 
-<<<<<<< HEAD
 # -------------------------  유저 페이지로 이동 ----------------------------------------------------
 
 @app.route('/modified_profile')
@@ -242,7 +247,5 @@ def find_nickname():
 # -------------------------          ----------------------------------------------------
 
 
-=======
->>>>>>> 3154950f4180f05f6e99b3fbbbfe31d0148514df
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
