@@ -107,7 +107,6 @@ def sign_in():
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
-
 # ------------------------- 회원가입 정보 DB에 저장 -----------------------------------------
 @app.route('/sign_up/save', methods=['POST'])
 def sign_up():
@@ -120,6 +119,7 @@ def sign_up():
         "password": password_hash,  # 비밀번호
         "nickname": nickname_receive,  # 닉네임
         "profile_name": username_receive,  # 프로필 이름 기본값은 아이디
+        "result_mbti": "",
         "profile_pic": "",  # 프로필 사진 파일 이름
         "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
@@ -302,8 +302,8 @@ def index5():
 # -------------------------  유저 페이지로 이동 ----------------------------------------------------
 
 @app.route('/modified_profile')
-def modified_profile():
-    return render_template('userpage.html')
+def modify_profile():
+    return render_template("user.html")
 
 # -------------------------  닉네임 가져오기    ----------------------------------------------------
 

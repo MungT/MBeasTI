@@ -4,6 +4,15 @@ $(document).ready(function(){
   getComment();
 })
 
+// result 페이지 로그아웃 기능
+function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
+
+
+
 //댓글을 불러오는 함수입니다.
 function getComment(){
   $.ajax({
