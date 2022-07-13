@@ -1,4 +1,6 @@
 #!-- 로그인 영역                                                                            --
+import math
+
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 # JWT 패키지를 사용합니다. (설치해야할 패키지 이름: PyJWT)
 import jwt
@@ -147,25 +149,85 @@ def save_img():
 # ------------------------- 원호님 영역 ----------------------------------------------------
 @app.route('/result')
 def result():
-    return render_template('result.html')
-# -------------------------          ----------------------------------------------------    
-    
+    token_chk()
+
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    temp_name = payload["id"]
+    user_info = db.users.find_one({"username": temp_name}, {"_id": False})
+    result_mbti = user_info['result_mbti']
+    user_mbti = db.mbtiComment.find_one({'mc_flag':result_mbti},{"_id":False})
+    print("infos->", user_mbti)
+
+    return render_template('result.html', mbti_list=user_mbti, user_info=user_info['username'])
+# -------------------------          ----------------------------------------------------
+
 @app.route('/commentAction', methods=['POST'])
 def commentAction():
+    token_chk()
+
+    now = datetime.now()
     comment_receive = request.form['txt']
+    user_receive = request.form['user']
+    now_mbti = request.form['now_mbti']
     print(comment_receive)
     doc={
-        'comment_receive':comment_receive
+        'comment_receive':comment_receive,
+        'user_name':user_receive,
+        'data_time':math.trunc(now.timestamp()),
+        'now_mbti':now_mbti
     }
     db.comment.insert_one(doc)
-    return jsonify({'msg': '등록완료'})  
-# -------------------------          ----------------------------------------------------    
-    
+    return jsonify({'msg': '등록완료'})
+# -------------------------          ----------------------------------------------------
+
 @app.route('/getComment', methods=['GET'])
 def getComment():
-    # comment_receive = request.agrs.get['txt']
-    all_comment = list(db.comment.find({},{'_id':False}))
+    token_chk()
+
+    now_mbti = request.args.get('now_mbti')
+    print("아아",now_mbti);
+    all_comment = list(db.comment.find({'now_mbti':now_mbti},{'_id':False}))
+    # for alls in all_comment:
+    #     print(alls)
+    print(all_comment)
     return jsonify({'msg': all_comment})
+
+@app.route('/commit-del', methods=['POST'])
+def commitDel():
+    token_chk()
+
+    commentTime = int(request.form['valTime'])
+    db.comment.delete_one({'data_time':commentTime})
+
+    return jsonify({'msg': '삭제완료'})
+
+@app.route('/commit-up', methods=['POST'])
+def commitUp():
+    token_chk()
+    commentTime = int(request.form['valTime'])
+    commit_info = db.comment.find_one({'data_time':commentTime},{'_id':False})
+    return jsonify({'msg': commit_info})
+
+@app.route('/commentModify', methods=['POST'])
+def commentModify():
+    token_chk()
+
+    comment_rece = request.form['txt']
+    time_rece = int(request.form['time'])
+    db.comment.update_one({'data_time':time_rece},{'$set':{'comment_receive':comment_rece}})
+    return jsonify({'msg': '수정완료'})
+
+
+# 페이지 이동이나 액션을 취할 때 쿠키값이 있는지 확인을 하는 함수
+def token_chk():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 #---------------------------------------------------------------------------------------
 # MBTI 검사 관련
@@ -194,6 +256,7 @@ def index4():
 def index5():
 
     return render_template("index5.html")
+
 
 
 
