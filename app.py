@@ -148,23 +148,31 @@ def save_img():
 # ------------------------- 원호님 영역 ----------------------------------------------------
 @app.route('/result')
 def result():
+    #유효성 체크를 합니다
     token_chk()
-
+    #토큰 가져옵니다
     token_receive = request.cookies.get('mytoken')
+    # 디코더를 해서 토큰값의 정보를 추출하려고 합니다.
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    # 토큰을 만들때 사용했던 계정을 추출합니다.
     temp_name = payload["id"]
+    # 계정으로 해당유저의 정보를 추출합니다.
     user_info = db.users.find_one({"username": temp_name}, {"_id": False})
+    # 유저 정보에서 mbti를 가져옵니다.
     result_mbti = user_info['result_mbti']
+    # mbti로 검색해서 보여질 mbti의 정보를 찾습니다.
     user_mbti = db.mbtiComment.find_one({'mc_flag':result_mbti},{"_id":False})
     print("infos->", user_mbti)
-
+    #                       index로 이동            뿌려질 MBTI의 정보     유저 계정
     return render_template('result.html', mbti_list=user_mbti, user_info=user_info['username'])
 # -------------------------          ----------------------------------------------------
-
+# 댓글 작성 하는곳
 @app.route('/commentAction', methods=['POST'])
 def commentAction():
+    #유효청 체크 함수
     token_chk()
 
+    # 고유번호를 위해 현 시간을 초로 변경
     now = datetime.now()
     comment_receive = request.form['txt']
     user_receive = request.form['user']
@@ -179,7 +187,7 @@ def commentAction():
     db.comment.insert_one(doc)
     return jsonify({'msg': '등록완료'})
 # -------------------------          ----------------------------------------------------
-
+# 댓글을 들고오는곳
 @app.route('/getComment', methods=['GET'])
 def getComment():
     token_chk()
@@ -192,6 +200,7 @@ def getComment():
     print(all_comment)
     return jsonify({'msg': all_comment})
 
+# 댓글 삭제 동작 일어나는곳
 @app.route('/commit-del', methods=['POST'])
 def commitDel():
     token_chk()
@@ -201,6 +210,7 @@ def commitDel():
 
     return jsonify({'msg': '삭제완료'})
 
+# 수정하기위해 이전 글 가져오는글
 @app.route('/commit-up', methods=['POST'])
 def commitUp():
     token_chk()
@@ -208,6 +218,7 @@ def commitUp():
     commit_info = db.comment.find_one({'data_time':commentTime},{'_id':False})
     return jsonify({'msg': commit_info})
 
+# 수정 동작이 일어나는 곳
 @app.route('/commentModify', methods=['POST'])
 def commentModify():
     token_chk()
