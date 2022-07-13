@@ -30,12 +30,11 @@
     <h1 class="title">M BeasT I</h1>
     <section class="section01">
       <div class="container">
-        <h2><span>ENTJ</span>을(를) 위한 동물 추천</h2>
+        <h2><span class="user_mbti">{{ mbti_list['mc_flag'] }}</span>을(를) 위한 동물 추천</h2>
         <figure>
-          <img src="../static/img/entj.jpg" alt="entj">
+          <img src="../static/img/{{ mbti_list['mc_file_name'] }}" alt="{{ mbti_list['mc_flag'] }}">
           <figcaption>
-            <p>ENTJ 유형 특징은 천성적으로 타고난 리더입니다.</p>
-            <p>이 유형에 속하는 사람은 넘치는 카리스마와 자신감으로 공통의 목표 실현을 위해 다른 이들을 이끌고 진두지휘합니다.</p>
+            <p>{{ mbti_list['mc_comment'] }}</p>
           </figcaption>
         </figure>
       </div>
@@ -43,10 +42,12 @@
 
     <section class="section02">
       <div class="container">
-        <h3 class="hidden">댓글기능</h3>
         <div class="section02-write-box">
+          <input type="hidden" class="user-name" data-name="{{ user_info }}"/>
           <textarea class="comment" rows="5" cols="125" placeholder="댓글 내용을 입력하세요."></textarea>
           <button class="button is-dark submit">등록</button>
+          <input type="hidden" class="modi-time" data-time=""/>
+          <input type="hidden" class="modi-name" data-name=""/>
         </div>
         <div class="box comment-list">
 <!--          <article class="media">-->
@@ -64,27 +65,12 @@
 <!--                </p>-->
 <!--                <div class="field is-grouped">-->
 <!--                  <p class="control"><button class="button is-link">Update</button></p>-->
-<!--                  <p class="control"><button class="button is-danger">Delete</button></p>-->
+<!--                  <p class="control"><button class="button is-danger del-btn">Delete</button></p>-->
 <!--                </div>-->
 <!--              </div>-->
 <!--            </div>-->
 <!--          </article>-->
         </div>
-      </div>
-    </section>
-
-    <section class="section03">
-      <div class="container">
-<!--        <h3></h3>-->
-        <figure>
-          <img src="../static/img/thumbnail.png" alt="thumbnail01"/>
-        </figure>
-        <figure>
-          <img src="../static/img/thumbnail.png" alt="thumbnail01"/>
-        </figure>
-        <figure>
-          <img src="../static/img/thumbnail.png" alt="thumbnail01"/>
-        </figure>
       </div>
     </section>
   </div>
