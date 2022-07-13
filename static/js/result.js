@@ -109,6 +109,7 @@ $(document).on("click",'.del-btn',function(){
       type:"POST",
       data:{valTime:commentTime},
       success:function(result){
+        $(".comment").val("");
         alert(result.msg);
         getComment();/*삭제하고 완료후 다시 댓글을 부려줍니다*/
       }
