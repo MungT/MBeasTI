@@ -78,8 +78,8 @@
 
 <script>
     // {% if msg %}
-        //     alert("{{ msg }}")
-        // {% endif %}
+    //     alert("{{ msg }}")
+    // {% endif %}
 
     //
     function sign_in() {
@@ -116,6 +116,8 @@
                 } else {
                     alert(response['msg'])
                 }
+                // userpage로 아이디 보내기
+                localStorage.setItem(find_nickname, username);
             }
         });
     }
@@ -127,7 +129,6 @@
         let password2 = $("#input-password2").val()
         let nickname = $("#input_nick").val()
         console.log(username, password, password2, nickname)
-
 
         if ($("#help-id").hasClass("is-danger")) {
             alert("아이디를 다시 확인해주세요.")
@@ -189,8 +190,8 @@
         $("#help-id").toggleClass('is-hidden')
         $("#help-password").toggleClass('is-hidden')
         $("#sign-up-box").toggleClass('is-hidden')
-        $("#input-password2").toggleClass('is-hidden')
-        $("#help-password2").toggleClass('is-hidden')
+        $("#password2").toggleClass('is-hidden')
+        $("#div-sign-in-or-up").toggleClass('is-hidden')
         $("#nick_name").toggleClass('is-hidden')
         $("#btn-check-nick").toggleClass('is-hidden')
     }
@@ -245,40 +246,40 @@
         });
     }
 
-    function check_dup_nick(){
+    function check_dup_nick() {
 
-    let nickname = $("#input_nick").val()
-    console.log(nickname)
-    if (nickname == "") {
-        $("#help-nickname").text("닉네임을 입력해주세요.").removeClass("is-safe").addClass("is-danger")
-        $("#input_nick").focus()
-        return;
-    }
-    if (!is_nickname(nickname)) {
-        $("#help-nickname").text("닉네임 형식을 확인해주세요. 닉네임은 한글, 영문, 숫자만 가능하며 2-10자리 가능").removeClass("is-safe").addClass("is-danger")
-        $("#input_nick").focus()
-        return;
-    }
-
-    <!--DB에서 회원가입 시도 중인 중복 닉네임이 있는지 확인-->
-    $("#input_nick").addClass("is-loading")
-    $.ajax({
-        type: "POST",
-        url: '/sign_up/check_dup_nick',
-        data: {
-            nickname_give: nickname
-        },
-        success: function (response) {
-
-            if (response["checks"]) {
-                $("#help-nickname").text("이미 존재하는 닉네임입니다.").removeClass("is-safe").addClass("is-danger")
-                $("#input_nick").focus()
-            } else {
-                $("#help-nickname").text("사용할 수 있는 닉네임입니다.").removeClass("is-danger").addClass("is-success")
-            }
-            $("#help-nickname").removeClass("is-loading")
+        let nickname = $("#input_nick").val()
+        console.log(nickname)
+        if (nickname == "") {
+            $("#help-nickname").text("닉네임을 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+            $("#input_nick").focus()
+            return;
         }
-    });
+        if (!is_nickname(nickname)) {
+            $("#help-nickname").text("닉네임 형식을 확인해주세요. 닉네임은 한글, 영문, 숫자만 가능하며 2-10자리 가능").removeClass("is-safe").addClass("is-danger")
+            $("#input_nick").focus()
+            return;
+        }
+
+        <!--DB에서 회원가입 시도 중인 중복 닉네임이 있는지 확인-->
+        $("#input_nick").addClass("is-loading")
+        $.ajax({
+            type: "POST",
+            url: '/sign_up/check_dup_nick',
+            data: {
+                nickname_give: nickname
+            },
+            success: function (response) {
+
+                if (response["checks"]) {
+                    $("#help-nickname").text("이미 존재하는 닉네임입니다.").removeClass("is-safe").addClass("is-danger")
+                    $("#input_nick").focus()
+                } else {
+                    $("#help-nickname").text("사용할 수 있는 닉네임입니다.").removeClass("is-danger").addClass("is-success")
+                }
+                $("#help-nickname").removeClass("is-loading")
+            }
+        });
     }
 </script>
 </head>
@@ -316,6 +317,16 @@
                             <p id="help-password-login" class="help is-danger"></p>
                         </div>
                     </div>
+                    <div class="mb-5 is-hidden" id="password2">
+                        <div class="field">
+                            <div class="control has-icons-left" style="width:100%">
+                                <input id="input-password2" class="input" type="password"
+                                       placeholder="비밀번호 재입력">
+                                <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
+                            </div>
+                            <p id="help-password2" class="help">비밀번호를 다시 한 번 입력해주세요.</p>
+                        </div>
+                    </div>
                     <div id="nick_name" class="field is-horizontal is-hidden">
                         <div class="field-body">
                             <div class="field">
@@ -333,7 +344,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="div-sign-in-or-up" class="has-text-centered">
+                    <div id="div-sign-in-or-up" class="has-text-centered" style="margin: auto auto 20px auto">
                         <nav class="level is-mobile">
                             <button class="level-item button is-sparta" onclick="sign_in()">
                                 로그인
@@ -349,16 +360,7 @@
                         </nav>
                     </div>
                     <div id="sign-up-box" class="is-hidden">
-                        <div class="mb-5">
-                            <div class="field">
-                                <div class="control has-icons-left" style="width:100%">
-                                    <input id="input-password2" class="input is-hidden" type="password"
-                                           placeholder="비밀번호 재입력">
-                                    <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
-                                </div>
-                                <p id="help-password2" class="help is-hidden">비밀번호를 다시 한 번 입력해주세요.</p>
-                            </div>
-                        </div>
+
                         <nav class="level is-mobile">
                             <button class="level-item button is-sparta" onclick="sign_up()">
                                 회원가입
