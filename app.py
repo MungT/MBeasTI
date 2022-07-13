@@ -43,14 +43,32 @@ db = client.MBTI
 #################################
 @app.route('/')
 def home():
+    # 여기는 토큰의 유효기간만 확인
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        return render_template('index.html')
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+    # 여기서 MBTI 정보 유무에 따라 result or index 이동 로직
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    user_info = db.users.find_one({"username": payload['id']}, {"_id": False})
+    user_mbti = user_info['result_mbti']
+    if user_mbti != "":
+        return redirect(url_for("result"))
+    else:
+        return redirect(url_for("index"))
+
+
+user_info = db.users.find_one({"username": "MBTI123"}, {"_id": False})
+user_mbti = user_info['result_mbti']
+print(user_mbti)
+# if user_mbti == "":
+#     print("개같이 공백임")
+
+
+
 
 
 @app.route('/login')
