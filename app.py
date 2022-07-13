@@ -1,4 +1,6 @@
 #!-- 로그인 영역                                                                            --
+import math
+
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 # JWT 패키지를 사용합니다. (설치해야할 패키지 이름: PyJWT)
 import jwt
@@ -147,25 +149,97 @@ def save_img():
 # ------------------------- 원호님 영역 ----------------------------------------------------
 @app.route('/result')
 def result():
-    return render_template('result.html')
-# -------------------------          ----------------------------------------------------    
-    
+    #유효성 체크를 합니다
+    token_chk()
+    #토큰 가져옵니다
+    token_receive = request.cookies.get('mytoken')
+    # 디코더를 해서 토큰값의 정보를 추출하려고 합니다.
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    # 토큰을 만들때 사용했던 계정을 추출합니다.
+    temp_name = payload["id"]
+    # 계정으로 해당유저의 정보를 추출합니다.
+    user_info = db.users.find_one({"username": temp_name}, {"_id": False})
+    # 유저 정보에서 mbti를 가져옵니다.
+    result_mbti = user_info['result_mbti']
+    # mbti로 검색해서 보여질 mbti의 정보를 찾습니다.
+    user_mbti = db.mbtiComment.find_one({'mc_flag':result_mbti},{"_id":False})
+    print("infos->", user_mbti)
+    #                       index로 이동            뿌려질 MBTI의 정보     유저 계정
+    return render_template('result.html', mbti_list=user_mbti, user_info=user_info['username'])
+# -------------------------          ----------------------------------------------------
+# 댓글 작성 하는곳
 @app.route('/commentAction', methods=['POST'])
 def commentAction():
+    #유효청 체크 함수
+    token_chk()
+
+    # 고유번호를 위해 현 시간을 초로 변경
+    now = datetime.now()
     comment_receive = request.form['txt']
+    user_receive = request.form['user']
+    now_mbti = request.form['now_mbti']
     print(comment_receive)
     doc={
-        'comment_receive':comment_receive
+        'comment_receive':comment_receive,
+        'user_name':user_receive,
+        'data_time':math.trunc(now.timestamp()),
+        'now_mbti':now_mbti
     }
     db.comment.insert_one(doc)
-    return jsonify({'msg': '등록완료'})  
-# -------------------------          ----------------------------------------------------    
-    
+    return jsonify({'msg': '등록완료'})
+# -------------------------          ----------------------------------------------------
+# 댓글을 들고오는곳
 @app.route('/getComment', methods=['GET'])
 def getComment():
-    # comment_receive = request.agrs.get['txt']
-    all_comment = list(db.comment.find({},{'_id':False}))
+    token_chk()
+
+    now_mbti = request.args.get('now_mbti')
+    print("아아",now_mbti);
+    all_comment = list(db.comment.find({'now_mbti':now_mbti},{'_id':False}))
+    # for alls in all_comment:
+    #     print(alls)
+    print(all_comment)
     return jsonify({'msg': all_comment})
+
+
+# 댓글 삭제 동작 일어나는곳
+@app.route('/commit-del', methods=['POST'])
+def commitDel():
+    token_chk()
+
+    commentTime = int(request.form['valTime'])
+    db.comment.delete_one({'data_time':commentTime})
+
+    return jsonify({'msg': '삭제완료'})
+
+# 수정하기위해 이전 글 가져오는글
+@app.route('/commit-up', methods=['POST'])
+def commitUp():
+    token_chk()
+    commentTime = int(request.form['valTime'])
+    commit_info = db.comment.find_one({'data_time':commentTime},{'_id':False})
+    return jsonify({'msg': commit_info})
+
+# 수정 동작이 일어나는 곳
+@app.route('/commentModify', methods=['POST'])
+def commentModify():
+    token_chk()
+
+    comment_rece = request.form['txt']
+    time_rece = int(request.form['time'])
+    db.comment.update_one({'data_time':time_rece},{'$set':{'comment_receive':comment_rece}})
+    return jsonify({'msg': '수정완료'})
+
+
+# 페이지 이동이나 액션을 취할 때 쿠키값이 있는지 확인을 하는 함수
+def token_chk():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 #---------------------------------------------------------------------------------------
 # MBTI 검사 관련
