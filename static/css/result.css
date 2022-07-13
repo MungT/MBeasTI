@@ -2,10 +2,11 @@
 
 body,html{width:100%;height:100%;}
 .content-wrap{width:100%;height:auto;padding-top:100px;}
+.content-wrap .title{font-family: 'Black Han Sans',sans-serif;font-size:400%;text-align:center;}
 
 
 .content-wrap .section01{width:100%;}
-.content-wrap .section01 .container{width:1000px;margin:auto;background-color: rgba(245, 222, 179, 0.5);}
+.content-wrap .section01 .container{width:1000px;margin:auto;background-color: rgba(245, 222, 179, 0.2);}
 .content-wrap .section01 .container h2{font:600 30px/100px 'arial','sans-serif';padding-left:25px;}
 .content-wrap .section01 .container h2 span{font-size:50px;text-transform:uppercase;}
 .content-wrap .section01 .container figure{width:80%;margin:auto;text-align:center;}
@@ -23,6 +24,7 @@ body,html{width:100%;height:100%;}
 .content-wrap .section02 .container .section02-write-box textarea{resize:none;}
 .content-wrap .section02 .container .section02-write-box button{resize:none;font:25px/50px 'Arial','sans-serif';margin-left:25px;}
 .content-wrap .section02 .container .comment-list{}
+.content-wrap .section02 .container .comment-list .media:hover{background-color:rgba(0,0,0,0.1);transition: all 0.5s;}
 .content-wrap .section02 .container .comment-list .is-grouped{justify-content:end;}
 .content-wrap .section02 .container .comment-list .is-grouped p{margin:0 15px;}
 .content-wrap .section02 .container .comment-list .is-grouped p:nth-of-type(2){margin-right:0;}
