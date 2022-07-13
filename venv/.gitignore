@@ -1,0 +1,23 @@
+## 참고사항
+
+```
+메인 디렉토리에 [파일] - .env 생성
+아래 복붙 해주세요
+SECRET_KEY = SPARTA
+MONGODB_URL = mongodb+srv://(본인 DB 계정):(본인 DB 비밀번호)@cluster0.wjb9v.mongodb.net/?retryWrites=true&w=majority
+
+```
+### python packages
+```text
+flask
+certifi
+pymongo
+python-dotenv
+requests
+bs4
+dnspython
+pyjwt
+
+[설정] - [언어 & 프레임 워크] - [템플릿 언어] - [jinja2] 변경
+
+```
