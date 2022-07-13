@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Webpage Title -->
+    <title>MBeasTI | Login</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+    <!-- FONT ------------------------------------------------------------------ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet"
+    />
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <!-- 나중에 CSS, js 분리 할 때 -->
+    <!-- CSS ------------------------------------------------------------------- -->
+    <!--    <link rel="stylesheet" href="../static/style.css"/>-->
+
+    <!-- JAVASCRIPT ------------------------------------------------------------ -->
+    <!--    <script defer src="../static/app.js"></script>-->
+</head>
+<style>
+    body {
+        background-color: rgba(0, 0, 0, 0.7);
+        min-height: 100vh;
+    }
+    .section {
+        padding: 1rem 1.5rem;
+        max-width: 750px;
+        margin: auto;
+    }
+    .title {
+        font-weight: 800;
+        font-size: 5rem;
+    }
+    .subtitle {
+        font-size: 2rem;
+    }
+    .is-sparta {
+        color: rgba(0, 0, 0, 0.7) !important;
+    }
+</style>
+<script>
+    function auto_find_nickname() {
+        $.ajax({
+            type: "GET",
+            url: "/find_nickname",
+            data: {},
+            success: function (get_nick) {
+                console.log(get_nick)
+            }
+        })
+    }
+</script>
+<body>
+<section class="hero is-white">
+    <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+        <h1 class="title is-sparta">환영합니다!</h1>
+        <h3 class="subtitle is-sparta">세상을 달달하게</h3>
+    </div>
+</section>
+</body>
+</html>
+
+

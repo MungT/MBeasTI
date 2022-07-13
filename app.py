@@ -19,6 +19,7 @@ import os
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from pymongo import MongoClient
+
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
@@ -40,19 +41,30 @@ client = MongoClient(MONGODB_URL)
 db = client.M_Beast_I
 db = client.MBTI
 
+
 #################################
 ##  HTML을 주는 부분             ##
 #################################
 @app.route('/')
 def home():
+    # 여기는 토큰의 유효기간만 확인
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        return render_template('index.html')
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+    # 여기서 MBTI 정보 유무에 따라 result or index 이동 로직
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    user_info = db.users.find_one({"username": payload['id']}, {"_id": False})
+    user_mbti = user_info['result_mbti']
+    if user_mbti != "":
+        return redirect(url_for("result"))
+    else:
+        return redirect(url_for("index"))
+
+
 
 
 @app.route('/login')
@@ -74,8 +86,8 @@ def user(username):
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
-@app.route('/sign_in', methods=['POST'])
 
+@app.route('/sign_in', methods=['POST'])
 def sign_in():
     # 로그인
     username_receive = request.form['username_give']
@@ -114,8 +126,21 @@ def sign_up():
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
+# ------------------------- MBTI 결과 DB 저장용    --------------------------------------
+# 여긴 성공!
+## 위에 포스트로는 실패했어요 ...
+@app.route('/db_mbti/save', methods=['POST'])
+def db_upload():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    mbti_receive = request.form['mbti_give']
 
-# -------------------------    -------------------------------------------------------
+    db.users.update_one({'username': payload['id']}, {'$set': {'result_mbti': mbti_receive}})
+    return jsonify({'result': 'success'})
+
+
+
+
 
 # ------------------------- 중복체크 ----------------------------------------------------
 @app.route('/sign_up/check_dup', methods=['POST'])
@@ -125,12 +150,15 @@ def check_dup():
     exists = bool(db.users.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
+
 @app.route('/sign_up/check_dup_nick', methods=['POST'])
 def check_dup_nick():
     # nick 중복확인
     nickname_receive = request.form['nickname_give']
     checks = bool(db.users.find_one({"nickname": nickname_receive}))
     return jsonify({'result': 'success', 'checks': checks})
+
+
 # -------------------------          ----------------------------------------------------
 
 @app.route('/update_profile', methods=['POST'])
@@ -142,6 +170,8 @@ def save_img():
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
+
+
 # -------------------------          ----------------------------------------------------
 
 # ------------------------- 원호님 영역 ----------------------------------------------------
@@ -177,6 +207,8 @@ def commentAction():
     user_receive = request.form['user']
     now_mbti = request.form['now_mbti']
     print(comment_receive)
+
+# -------------------------          ----------------------------------------------------
     doc={
         'comment_receive':comment_receive,
         'user_name':user_receive,
@@ -244,31 +276,45 @@ def token_chk():
 
 @app.route('/index')
 def index():
-
     return render_template("index.html")
+
 
 @app.route('/index2')
 def index2():
-
     return render_template("index2.html")
+
 
 @app.route('/index3')
 def index3():
-
     return render_template("index3.html")
+
 
 @app.route('/index4')
 def index4():
-
     return render_template("index4.html")
+
 
 @app.route('/index5')
 def index5():
-
     return render_template("index5.html")
 
+
+# -------------------------  유저 페이지로 이동 ----------------------------------------------------
+
+@app.route('/modified_profile')
+def modified_profile():
+    return render_template('userpage.html')
+
+# -------------------------  닉네임 가져오기    ----------------------------------------------------
+
+@app.route('/find_nickname', methods=['POST'])
+def find_nickname():
+    your_nickname = list(db.users.find({}, {'_id': False}))
+    return jsonify({'get_nick': your_nickname})
+
+
+# -------------------------          ----------------------------------------------------
 
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
-
