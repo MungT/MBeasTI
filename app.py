@@ -97,6 +97,7 @@ def sign_in():
 # ------------------------- 회원가입 정보 DB에 저장 -----------------------------------------
 @app.route('/sign_up/save', methods=['POST'])
 def sign_up():
+    mbti_receive = request.form['MBTI_give']
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
     nickname_receive = request.form['nickname_give']
@@ -106,7 +107,7 @@ def sign_up():
         "password": password_hash,  # 비밀번호
         "nickname": nickname_receive,  # 닉네임
         "profile_name": username_receive,  # 프로필 이름 기본값은 아이디
-        "result_mbti": "", # <- 이 자리가 mbti DB 자리 입니다.
+        "result_mbti": mbti_receive, # <- 이 자리가 mbti DB 자리 입니다.
         "profile_pic": "",  # 프로필 사진 파일 이름
         "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
