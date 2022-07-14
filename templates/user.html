@@ -49,8 +49,8 @@
             height: 100%;
             object-fit: cover;
         }
-
-
+        .navbar .button{background-color:#F95700;color:#fff;}
+        .change_color{background-color:#F95700;color:#fff;}
     </style>
 </head>
 <script>
@@ -74,7 +74,7 @@
             success: function (response) {
                 if (response["result"] == "success") {
                     alert(response["msg"])
-                    window.location.reload();
+                    window.location.href = "/user"
                 }
             }
         });
@@ -85,6 +85,9 @@
         alert('로그아웃!')
         window.location.href = "/login"
     }
+    function home(){
+        window.location.href = "/result"
+    }
 
 
 </script>
@@ -93,6 +96,9 @@
     <div class="navbar-end">
         <div class="navbar-item">
             <div class="buttons">
+                <a onclick="home()" class="button is-dark">
+                    <strong>홈</strong>
+                </a>
                 <a onclick="modify_user()" class="button is-dark">
                     <strong>회원 정보 변경</strong>
                 </a>
@@ -139,7 +145,7 @@
             </div>
         </div>
     </div>
-    <button onclick="update_profile()" class="button is-dark">변경 완료</button>
+    <button onclick="update_profile()" class="button is-dark" style="background-color: #f95700">변경 완료</button>
 </form>
 </body>
 </html>

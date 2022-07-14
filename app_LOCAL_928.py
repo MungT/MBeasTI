@@ -55,7 +55,6 @@ def home():
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
-
     # 여기서 MBTI 정보 유무에 따라 result or index 이동 로직
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     user_info = db.users.find_one({"username": payload['id']}, {"_id": False})
@@ -77,16 +76,10 @@ def user():
     # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    temp_id = payload['id']
-    # print("여기까지는 작동 됩니다!")
-    user_info = db.users.find_one({"username": temp_id}, {"_id": False})
+    user_id = payload["id"]
+    user_info = db.users.find_one({"username": user_id}, {"_id": False})
 
-    # 변경할 정보 보내주기 ( 닉네임 / 사진 )     속성 : 클래스명
     return render_template('user.html', user_info=user_info)
-
-
-#---------------------------------------------------------------------------원호[회원정보변경]↓
-
 
 @app.route('/user_change', methods=['POST'])
 def user_change():
@@ -112,7 +105,6 @@ def file_upload():
     return redirect(url_for("index"))
     # else:
     #     return render_template('index.html')
-
 #---------------------------------------------------------------------------원호[회원정보변경]↑
 
 
@@ -369,7 +361,6 @@ def index4():
 @app.route('/index5')
 def index5():
     return render_template("index5.html")
-
 
 
 # -------------------------          ----------------------------------------------------

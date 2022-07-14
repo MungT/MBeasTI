@@ -71,10 +71,8 @@ def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
-#---------------------------------------------------------------------------원호[회원정보변경]↓
 @app.route('/user')
 def user():
-    # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     temp_id = payload['id']
@@ -292,6 +290,12 @@ def getComment():
     token_chk()
 
     now_mbti = request.args.get('now_mbti')
+    print("아아", now_mbti);
+    all_comment = list(db.comment.find({'now_mbti': now_mbti}, {'_id': False}))
+    # for alls in all_comment:
+    #     print(alls)
+    print(all_comment)
+
     all_comment = list(db.comment.find({'now_mbti':now_mbti},{'_id':False}))
     for alls in all_comment:
         info = db.users.find_one({'username':alls['user_name']})
@@ -371,7 +375,10 @@ def index5():
     return render_template("index5.html")
 
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 4418dca8fbe9630b0449fe0ee7a8dc50881b79a8
 # -------------------------          ----------------------------------------------------
 
 
