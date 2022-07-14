@@ -363,13 +363,6 @@ def index5():
     return render_template("index5.html")
 
 
-# -------------------------  유저 페이지로 이동 ----------------------------------------------------
-
-@app.route('/modified_profile')
-def modify_profile():
-    return render_template("user.html")
-
-
 # -------------------------          ----------------------------------------------------
 
 
