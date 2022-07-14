@@ -1,8 +1,9 @@
 @charset "UTF-8";
 
 body,html{width:100%;height:100%;}
+.navbar .button{background-color:#F95700;color:#fff;}
 .content-wrap{width:100%;height:auto;padding-top:100px;}
-.content-wrap .title{font-family: 'Black Han Sans',sans-serif;font-size:400%;text-align:center;}
+.content-wrap .title{font-family: 'Black Han Sans',sans-serif;font-size:400%;text-align:center;color:#F95700;}
 
 
 .content-wrap .section01{width:100%;}

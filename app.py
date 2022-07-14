@@ -71,6 +71,7 @@ def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
+<<<<<<< HEAD
 
 @app.route('/user')
 def user():
@@ -82,6 +83,16 @@ def user():
 
     # 변경할 정보 보내주기 ( 닉네임 / 사진 )     속성 : 클래스명
     return render_template('user.html', user_info=user_info)
+=======
+#---------------------------------------------------------------------------원호[회원정보변경]↓
+@app.route('/user')
+def user():
+    # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    user_id = payload["id"]
+    user_info = db.users.find_one({"username": user_id}, {"_id": False})
+>>>>>>> c3f4c32ea54cc3993b8bd0f1effc269daa3a8977
 
 
 #---------------------------------------------------------------------------원호[회원정보변경]↑
@@ -148,7 +159,7 @@ def sign_up():
         "password": password_hash,  # 비밀번호
         "nickname": nickname_receive,  # 닉네임
         "profile_name": username_receive,  # 프로필 이름 기본값은 아이디
-        "result_mbti": "",
+        "result_mbti": "", # mbti 칸
         "profile_pic": "",  # 프로필 사진 파일 이름
         "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
@@ -291,12 +302,15 @@ def getComment():
     token_chk()
 
     now_mbti = request.args.get('now_mbti')
+<<<<<<< HEAD
     print("아아", now_mbti);
     all_comment = list(db.comment.find({'now_mbti': now_mbti}, {'_id': False}))
     # for alls in all_comment:
     #     print(alls)
     print(all_comment)
 
+=======
+>>>>>>> c3f4c32ea54cc3993b8bd0f1effc269daa3a8977
     all_comment = list(db.comment.find({'now_mbti':now_mbti},{'_id':False}))
     for alls in all_comment:
         info = db.users.find_one({'username':alls['user_name']})
