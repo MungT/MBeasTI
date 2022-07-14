@@ -29,15 +29,39 @@
 
         /*}*/
 
+            body {
+        background-color: RGBA(232, 52, 8, 0.2);
+        min-height: 100vh;
+    }
+
+    .section {
+        padding: 1rem 1.5rem;
+        max-width: 750px;
+        margin: auto;
+    }
+
+    .title {
+        font-weight: 800;
+        font-size: 5rem;
+    }
+
+    .subtitle {
+        font-size: 2rem;
+    }
+
+    .is-sparta {
+        color: #f95700 !important;
+    }
+
         .title {
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 400%;
+            font-size: 350%;
             text-align: center;
         }
 
         .survey {
             text-align: center;
-
+            color: #f95700;
             width: 300px;
             margin: 100px auto auto auto;
             box-shadow: 0px 0px 3px 0px gray;
@@ -58,18 +82,16 @@
 
         .answer {
             width: 1000px;
-            margin: 230px 10px 10px 100px;
+            margin: 100px 500px 500px 500px;
         }
 
         .answer > button {
             width: 200px;
             height: 100px;
         }
-
+        .navbar .button{background-color:#F95700;color:#fff;}
 
     </style>
-
-
     <script>
         function sign_out() {
             $.removeCookie('mytoken', {path: '/'});
@@ -96,14 +118,15 @@
     </script>
 </head>
 <body>
+
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-end">
         <div class="navbar-item">
             <div class="buttons">
-                <a onclick="modify_user()" class="button is-dark">
+                <a onclick="modify_user()" class="button is-dark" style="background-color: #f95700;">
                     <strong>회원 정보 변경</strong>
                 </a>
-                <a class="button is-light" onclick="sign_out()">
+                <a onclick="sign_out()" class="button is-light" style="background-color: #f95700" ;>
                     로그아웃
                 </a>
             </div>
@@ -111,28 +134,16 @@
     </div>
     </div>
 </nav>
-<div class="order-info">
-
-
-</div>
-<div class="wrap">
-    <h1 class="title">M BeasT I</h1>
-    <tr></tr>
-    <!--    <div class="input-group mb-3">-->
-    <!--        <span class="input-group-text">닉네임</span>-->
-    <!--        <input id="name" type="text" class="form-control">-->
-    <!--    </div>-->
-
-    <div class="survey">
-        사람들과 만나는 것이 즐겁다
+<section class="hero is-white">
+    <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+        <h1 class="title is-sparta">MBTI 진단테스트</h1>
+        <h3 class="subtitle is-sparta">Q.1 나는 사람들과 만나는 것이 즐겁다</h3>
     </div>
-    <div class="answer">
-        <button type="button" class="btn btn-primary btn-lg" onclick="yes1()">Yes</button>
-        <button type="button" class="btn btn-secondary btn-lg" style="margin-left: 350px;" onclick="no1()">No</button>
+</section>
+<div class="answer">
+        <button type="button" class="btn btn-primary btn-lg" style="background-color: #f95700"  onclick="yes1()">Yes</button>
+        <button type="button" class="btn btn-secondary btn-lg" style="background-color: #f95700"  onclick="no1()">No</button>
     </div>
-
-    </p>
-</div>
 
 </body>
 
