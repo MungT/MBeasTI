@@ -1,14 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
-
     <!-- Webpage Title -->
-    <title>{{ user_info.profile_name }} | SWEETER</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <meta property="og:title" content="스위터 - 세상을 달달하게"/>
-    <meta property="og:description" content="mini project for Web Plus"/>
-    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+    <title>MBeasTI | Login</title>
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,57 +12,136 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <!-- Font Awesome CSS -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Stylish&display=swap" rel="stylesheet">
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
-
+    <!-- FONT ------------------------------------------------------------------ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet"
+    />
     <!-- JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
-    <script>
-        // 로그 아웃 버튼 기능 구현 ( 토큰 삭제 )
-        function sign_out() {
-            $.removeCookie('mytoken', {path: '/'});
-            alert('로그아웃!')
-            window.location.href = "/login"
+    <!-- 나중에 CSS, js 분리 할 때 -->
+    <!-- CSS ------------------------------------------------------------------- -->
+    <!--    <link rel="stylesheet" href="../static/style.css"/>-->
+
+    <!-- JAVASCRIPT ------------------------------------------------------------ -->
+    <!--    <script defer src="../static/app.js"></script>-->
+    <style>
+        .new-box {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            border-radius: 30%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        $(document).ready(function(){
-          $(".user_modify_btn").on({
-           click:function(){
-             $.ajax({
-               url:'/user_change',
-               type:'post',
-               data:{nickname_give:$(".user_nickname").val(), userid_give:$(".user_id").val()},
-               success:function(result){
-                 alert(result.msg);
-               }
-             })
-           }
-         })
-        })
 
-    </script>
+        .new-profile {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+
+    </style>
 </head>
+<script>
+    function update_profile() {
+        let nickname = $('#input_nickname').val()
+        let file = $('#input-pic')[0].files[0]
+        // 자기소개 함수 -> 구현하질 않을 예정으로 나중에 삭제할 거임 -> 회원가입 시, 뚫어놓은 데이터 자리들도 나중에 정리 필요
+        let about = $("#textarea-about").val()
+        let form_data = new FormData()
+        form_data.append("file_give", file)
+        form_data.append("nickname_give", nickname)
+        form_data.append("about_give", about)
+
+        $.ajax({
+            type: "POST",
+            url: "/update_profile",
+            data: form_data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response["result"] == "success") {
+                    alert(response["msg"])
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function sign_out() {
+        $.removeCookie('mytoken', {path: '/'});
+        alert('로그아웃!')
+        window.location.href = "/login"
+    }
+
+
+</script>
 <body>
-  <a class="button is-dark">
-      <strong>회원 정보 변경</strong>
-  </a>
-  <a onclick="sign_out()" class="button is-light">
-      로그아웃
-  </a>
-
-  <label for="user_nickname">닉네임</label>
-  <input type="text" id="user_nickname" class="user_nickname" value="{{ user_info['nickname'] }}"/>
-  <input type="hidden" class="user_id" value="{{ user_info['username'] }}"/>
-  <button class="user_modify_btn">정보 변경</button>
-
-  <form action="file_upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file"/>
-        <input type="hidden" name="user_id" value="{{ user_info['username'] }}"/>
-        <input type="submit" value="제출하기"/>
-    </form>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-end">
+        <div class="navbar-item">
+            <div class="buttons">
+                <a onclick="modify_user()" class="button is-dark">
+                    <strong>회원 정보 변경</strong>
+                </a>
+                <a onclick="sign_out()" class="button is-light">
+                    로그아웃
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
 </nav>
+
+<a class="new-box" style="background: aqua;">
+    <img class="new-profile user_info" src="../static/img/{{ user_info['profile_pic_real'] }}">
+</a>
+</div>
+    <section class="hero is-white">
+        <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+        <h1 id="username" class="title is-sparta user_info">{{ user_info['nickname'] }}</h1>
+        <h2 class="subtitle is-sparta">반갑습니다!</h2>
+</div>
+</section>
+<form class="box" style="max-width: 480px;margin:auto">
+    <div class="field">
+        <label class="label">닉네임</label>
+        <div class="control">
+            <input id="input_nickname" class="input" type="text" placeholder="변경할 닉네임을 작성해주세요">
+        </div>
+    </div>
+    <div class="field">
+        <label class="label" for="input-pic">프로필 사진</label>
+        <div class="control is-expanded">
+            <div class="file has-name">
+                <label class="file-label" style="width:100%">
+                    <input id="input-pic" class="file-input" type="file"
+                           name="resume">
+                    <span class="file-cta"><span class="file-icon"><i
+                            class="fa fa-upload"></i></span>
+                        <span class="file-label">파일 선택</span>
+                    </span>
+                    <span id="file-name" class="file-name"
+                          style="width:100%;max-width:100%"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <button onclick="update_profile()" class="button is-dark">변경 완료</button>
+</form>
 </body>
 </html>
+
+
