@@ -85,6 +85,10 @@
             localStorage.setItem("key2", 'N')
             window.location.href = "/index3"
         }
+
+        function modify_user(){
+            window.location.href = "/user"
+        }
     </script>
 </head>
 
@@ -93,7 +97,7 @@
     <div class="navbar-end">
         <div class="navbar-item">
             <div class="buttons">
-                <a class="button is-dark">
+                <a onclick="modify_user()" class="button is-dark">
                     <strong>회원 정보 변경</strong>
                 </a>
                 <a onclick="sign_out()" class="button is-light">

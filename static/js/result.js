@@ -11,6 +11,11 @@ function sign_out() {
             window.location.href = "/login"
         }
 
+// 개인정보 수정 페이지로 이동
+function modify_user(){
+            window.location.href = "/user"
+        }
+
 
 
 //댓글을 불러오는 함수입니다.

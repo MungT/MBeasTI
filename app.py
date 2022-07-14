@@ -64,28 +64,21 @@ def home():
     else:
         return redirect(url_for("index"))
 
-
-
-
 @app.route('/login')
 def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
-
-@app.route('/user/<username>')
-def user(username):
-    # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
-    token_receive = request.cookies.get('mytoken')
-    try:
+@app.route('/user')
+def user():
+        token_receive = request.cookies.get('mytoken')
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+        temp_id = payload['id']
+        print(temp_id)
+        user_info = db.users.find_one({"username": temp_id}, {"_id": False})
 
-        user_info = db.users.find_one({"username": username}, {"_id": False})
-        return render_template('user.html', user_info=user_info, status=status)
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
+        # 변경할 정보 보내주기 ( 닉네임 / 사진 )     속성 : 클래스명
+        return render_template('user.html', user_info=user_info)
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
@@ -137,10 +130,6 @@ def db_upload():
 
     db.users.update_one({'username': payload['id']}, {'$set': {'result_mbti': mbti_receive}})
     return jsonify({'result': 'success'})
-
-
-
-
 
 # ------------------------- 중복체크 ----------------------------------------------------
 @app.route('/sign_up/check_dup', methods=['POST'])
@@ -304,14 +293,6 @@ def index5():
 @app.route('/modified_profile')
 def modify_profile():
     return render_template("user.html")
-
-# -------------------------  닉네임 가져오기    ----------------------------------------------------
-
-@app.route('/find_nickname', methods=['POST'])
-def find_nickname():
-    your_nickname = list(db.users.find({}, {'_id': False}))
-    return jsonify({'get_nick': your_nickname})
-
 
 # -------------------------          ----------------------------------------------------
 
