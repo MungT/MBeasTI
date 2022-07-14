@@ -71,8 +71,6 @@ def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
-<<<<<<< HEAD
-
 @app.route('/user')
 def user():
     token_receive = request.cookies.get('mytoken')
@@ -83,19 +81,9 @@ def user():
 
     # 변경할 정보 보내주기 ( 닉네임 / 사진 )     속성 : 클래스명
     return render_template('user.html', user_info=user_info)
-=======
+
+
 #---------------------------------------------------------------------------원호[회원정보변경]↓
-@app.route('/user')
-def user():
-    # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    user_id = payload["id"]
-    user_info = db.users.find_one({"username": user_id}, {"_id": False})
->>>>>>> c3f4c32ea54cc3993b8bd0f1effc269daa3a8977
-
-
-#---------------------------------------------------------------------------원호[회원정보변경]↑
 
 
 @app.route('/user_change', methods=['POST'])
@@ -302,15 +290,12 @@ def getComment():
     token_chk()
 
     now_mbti = request.args.get('now_mbti')
-<<<<<<< HEAD
     print("아아", now_mbti);
     all_comment = list(db.comment.find({'now_mbti': now_mbti}, {'_id': False}))
     # for alls in all_comment:
     #     print(alls)
     print(all_comment)
 
-=======
->>>>>>> c3f4c32ea54cc3993b8bd0f1effc269daa3a8977
     all_comment = list(db.comment.find({'now_mbti':now_mbti},{'_id':False}))
     for alls in all_comment:
         info = db.users.find_one({'username':alls['user_name']})
@@ -389,12 +374,6 @@ def index4():
 def index5():
     return render_template("index5.html")
 
-
-# -------------------------  유저 페이지로 이동 ----------------------------------------------------
-
-@app.route('/modified_profile')
-def modify_profile():
-    return render_template("user.html")
 
 
 # -------------------------          ----------------------------------------------------
