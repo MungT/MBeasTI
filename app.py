@@ -64,21 +64,24 @@ def home():
     else:
         return redirect(url_for("index"))
 
+
 @app.route('/login')
 def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
+
 @app.route('/user')
 def user():
-        token_receive = request.cookies.get('mytoken')
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        temp_id = payload['id']
-        print(temp_id)
-        user_info = db.users.find_one({"username": temp_id}, {"_id": False})
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    temp_id = payload['id']
+    # print("여기까지는 작동 됩니다!")
+    user_info = db.users.find_one({"username": temp_id}, {"_id": False})
 
-        # 변경할 정보 보내주기 ( 닉네임 / 사진 )     속성 : 클래스명
-        return render_template('user.html', user_info=user_info)
+    # 변경할 정보 보내주기 ( 닉네임 / 사진 )     속성 : 클래스명
+    return render_template('user.html', user_info=user_info)
+
 
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
@@ -100,6 +103,7 @@ def sign_in():
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
+
 # ------------------------- 회원가입 정보 DB에 저장 -----------------------------------------
 @app.route('/sign_up/save', methods=['POST'])
 def sign_up():
@@ -119,6 +123,8 @@ def sign_up():
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
+
+
 # ------------------------- MBTI 결과 DB 저장용    --------------------------------------
 # 여긴 성공!
 ## 위에 포스트로는 실패했어요 ...
@@ -130,6 +136,7 @@ def db_upload():
 
     db.users.update_one({'username': payload['id']}, {'$set': {'result_mbti': mbti_receive}})
     return jsonify({'result': 'success'})
+
 
 # ------------------------- 중복체크 ----------------------------------------------------
 @app.route('/sign_up/check_dup', methods=['POST'])
@@ -155,7 +162,22 @@ def save_img():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # 프로필 업데이트
+        username = payload["id"]
+        nickname_receive = request.form["nickname_give"]
+        about_receive = request.form["about_give"]
+        new_doc = {
+            "nickname": nickname_receive,
+            "profile_info": about_receive
+        }
+        if 'file_give' in request.files:
+            file = request.files["file_give"]
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{username}.{extension}"
+            file.save("./static/" + file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+        db.users.update_one({'username': payload['id']}, {'$set': new_doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -166,9 +188,9 @@ def save_img():
 # ------------------------- 원호님 영역 ----------------------------------------------------
 @app.route('/result')
 def result():
-    #유효성 체크를 합니다
+    # 유효성 체크를 합니다
     token_chk()
-    #토큰 가져옵니다
+    # 토큰 가져옵니다
     token_receive = request.cookies.get('mytoken')
     # 디코더를 해서 토큰값의 정보를 추출하려고 합니다.
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -179,15 +201,17 @@ def result():
     # 유저 정보에서 mbti를 가져옵니다.
     result_mbti = user_info['result_mbti']
     # mbti로 검색해서 보여질 mbti의 정보를 찾습니다.
-    user_mbti = db.mbtiComment.find_one({'mc_flag':result_mbti},{"_id":False})
+    user_mbti = db.mbtiComment.find_one({'mc_flag': result_mbti}, {"_id": False})
     print("infos->", user_mbti)
     #                       index로 이동            뿌려질 MBTI의 정보     유저 계정
     return render_template('result.html', mbti_list=user_mbti, user_info=user_info['username'])
+
+
 # -------------------------          ----------------------------------------------------
 # 댓글 작성 하는곳
 @app.route('/commentAction', methods=['POST'])
 def commentAction():
-    #유효청 체크 함수
+    # 유효청 체크 함수
     token_chk()
 
     # 고유번호를 위해 현 시간을 초로 변경
@@ -197,15 +221,17 @@ def commentAction():
     now_mbti = request.form['now_mbti']
     print(comment_receive)
 
-# -------------------------          ----------------------------------------------------
-    doc={
-        'comment_receive':comment_receive,
-        'user_name':user_receive,
-        'data_time':math.trunc(now.timestamp()),
-        'now_mbti':now_mbti
+    # -------------------------          ----------------------------------------------------
+    doc = {
+        'comment_receive': comment_receive,
+        'user_name': user_receive,
+        'data_time': math.trunc(now.timestamp()),
+        'now_mbti': now_mbti
     }
     db.comment.insert_one(doc)
     return jsonify({'msg': '등록완료'})
+
+
 # -------------------------          ----------------------------------------------------
 # 댓글을 들고오는곳
 @app.route('/getComment', methods=['GET'])
@@ -213,8 +239,8 @@ def getComment():
     token_chk()
 
     now_mbti = request.args.get('now_mbti')
-    print("아아",now_mbti);
-    all_comment = list(db.comment.find({'now_mbti':now_mbti},{'_id':False}))
+    print("아아", now_mbti);
+    all_comment = list(db.comment.find({'now_mbti': now_mbti}, {'_id': False}))
     # for alls in all_comment:
     #     print(alls)
     print(all_comment)
@@ -227,17 +253,19 @@ def commitDel():
     token_chk()
 
     commentTime = int(request.form['valTime'])
-    db.comment.delete_one({'data_time':commentTime})
+    db.comment.delete_one({'data_time': commentTime})
 
     return jsonify({'msg': '삭제완료'})
+
 
 # 수정하기위해 이전 글 가져오는글
 @app.route('/commit-up', methods=['POST'])
 def commitUp():
     token_chk()
     commentTime = int(request.form['valTime'])
-    commit_info = db.comment.find_one({'data_time':commentTime},{'_id':False})
+    commit_info = db.comment.find_one({'data_time': commentTime}, {'_id': False})
     return jsonify({'msg': commit_info})
+
 
 # 수정 동작이 일어나는 곳
 @app.route('/commentModify', methods=['POST'])
@@ -246,7 +274,7 @@ def commentModify():
 
     comment_rece = request.form['txt']
     time_rece = int(request.form['time'])
-    db.comment.update_one({'data_time':time_rece},{'$set':{'comment_receive':comment_rece}})
+    db.comment.update_one({'data_time': time_rece}, {'$set': {'comment_receive': comment_rece}})
     return jsonify({'msg': '수정완료'})
 
 
@@ -260,7 +288,8 @@ def token_chk():
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
-#---------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------
 # MBTI 검사 관련
 
 @app.route('/index')
@@ -293,6 +322,7 @@ def index5():
 @app.route('/modified_profile')
 def modify_profile():
     return render_template("user.html")
+
 
 # -------------------------          ----------------------------------------------------
 

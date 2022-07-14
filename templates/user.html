@@ -33,7 +33,41 @@
     <!-- JAVASCRIPT ------------------------------------------------------------ -->
     <!--    <script defer src="../static/app.js"></script>-->
 </head>
-    <script>
+<script>
+    function update_profile() {
+        let nickname = $('#input_nickname').val()
+        let file = $('#input-pic')[0].files[0]
+        console.log(nickname,file)
+        // 자기소개 함수 -> 구현하질 않을 예정으로 나중에 삭제할 거임 -> 회원가입 시, 뚫어놓은 데이터 자리들도 나중에 정리 필요
+        let about = $("#textarea-about").val()
+        let form_data = new FormData()
+        form_data.append("file_give", file)
+        form_data.append("nickname_give", nickname)
+        form_data.append("about_give", about)
+        console.log(nickname, file, about, form_data)
+
+        $.ajax({
+            type: "POST",
+            url: "/update_profile",
+            data: form_data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response["result"] == "success") {
+                    alert(response["msg"])
+                    {#window.location.reload()#}
+                }
+            }
+        });
+    }
+
+    function sign_out() {
+        $.removeCookie('mytoken', {path: '/'});
+        alert('로그아웃!')
+        window.location.href = "/login"
+    }
+
 
 </script>
 <body>
@@ -54,12 +88,12 @@
 </nav>
 <section class="hero is-white">
     <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
-        <figure class="media-left" style="align-self: center">
+        <figure class="media-right" style="align-self: center">
             <a class="image is-96x96" href="#">
-                <img class="is-rounded user_info" src="../static/img/{{ user_info['profile_pic_real'] }}">
+                <img class=" is-rounded user_info" src="../static/img/{{ user_info['profile_pic_real'] }}">
             </a>
         </figure>
-        <h1 id="username" class="title is-sparta user_info">{{user_info['nickname']}}</h1>
+        <h1 id="username" class="title is-sparta user_info">{{ user_info['nickname'] }}</h1>
         <h2 class="subtitle is-sparta">반갑습니다!</h2>
     </div>
 </section>
@@ -67,7 +101,7 @@
     <div class="field">
         <label class="label">닉네임</label>
         <div class="control">
-            <input class="input" type="text" placeholder="변경할 닉네임을 작성해주세요">
+            <input id="input_nickname" class="input" type="text" placeholder="변경할 닉네임을 작성해주세요">
         </div>
     </div>
     <div class="field">
@@ -75,19 +109,19 @@
         <div class="control is-expanded">
             <div class="file has-name">
                 <label class="file-label" style="width:100%">
-                    <input id="input-pic" class="file-input" type="file"
+                    <input id="input-pic"  class="file-input" type="file"
                            name="resume">
                     <span class="file-cta"><span class="file-icon"><i
                             class="fa fa-upload"></i></span>
-                                                    <span class="file-label">파일 선택</span>
-                                                </span>
+                        <span class="file-label">파일 선택</span>
+                    </span>
                     <span id="file-name" class="file-name"
-                          style="width:100%;max-width:100%">{{ user_info.profile_pic }}</span>
+                          style="width:100%;max-width:100%"></span>
                 </label>
             </div>
         </div>
     </div>
-    <button class="button is-dark">변경 완료</button>
+    <button onclick="update_profile()" class="button is-dark">변경 완료</button>
 </form>
 </body>
 </html>
