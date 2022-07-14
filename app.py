@@ -55,6 +55,7 @@ def home():
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
     # 여기서 MBTI 정보 유무에 따라 result or index 이동 로직
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     user_info = db.users.find_one({"username": payload['id']}, {"_id": False})
@@ -71,7 +72,6 @@ def login():
     return render_template('login.html', msg=msg)
 
 
-<<<<<<< HEAD
 @app.route('/user')
 def user():
     token_receive = request.cookies.get('mytoken')
@@ -82,17 +82,10 @@ def user():
 
     # 변경할 정보 보내주기 ( 닉네임 / 사진 )     속성 : 클래스명
     return render_template('user.html', user_info=user_info)
-=======
-#---------------------------------------------------------------------------원호[회원정보변경]↓
-@app.route('/user')
-def user():
-    # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    user_id = payload["id"]
-    user_info = db.users.find_one({"username": user_id}, {"_id": False})
 
-    return render_template('user.html', user_info=user_info)
+
+#---------------------------------------------------------------------------원호[회원정보변경]↑
+
 
 @app.route('/user_change', methods=['POST'])
 def user_change():
@@ -118,8 +111,8 @@ def file_upload():
     return redirect(url_for("index"))
     # else:
     #     return render_template('index.html')
+
 #---------------------------------------------------------------------------원호[회원정보변경]↑
->>>>>>> 1db914ce7694b4f415c66b0ae36890f3bc74b758
 
 
 @app.route('/sign_in', methods=['POST'])
@@ -298,20 +291,18 @@ def getComment():
     token_chk()
 
     now_mbti = request.args.get('now_mbti')
-<<<<<<< HEAD
     print("아아", now_mbti);
     all_comment = list(db.comment.find({'now_mbti': now_mbti}, {'_id': False}))
     # for alls in all_comment:
     #     print(alls)
     print(all_comment)
-=======
+
     all_comment = list(db.comment.find({'now_mbti':now_mbti},{'_id':False}))
     for alls in all_comment:
         info = db.users.find_one({'username':alls['user_name']})
         img_src=info['profile_pic_real']
         alls['img_src'] = img_src
 
->>>>>>> 1db914ce7694b4f415c66b0ae36890f3bc74b758
     return jsonify({'msg': all_comment})
 
 
