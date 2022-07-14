@@ -70,19 +70,6 @@ def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
-
-<<<<<<< HEAD
-@app.route('/user')
-def user():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    temp_id = payload['id']
-    # print("여기까지는 작동 됩니다!")
-    user_info = db.users.find_one({"username": temp_id}, {"_id": False})
-
-    # 변경할 정보 보내주기 ( 닉네임 / 사진 )     속성 : 클래스명
-    return render_template('user.html', user_info=user_info)
-=======
 #---------------------------------------------------------------------------원호[회원정보변경]↓
 @app.route('/user')
 def user():
@@ -119,7 +106,6 @@ def file_upload():
     # else:
     #     return render_template('index.html')
 #---------------------------------------------------------------------------원호[회원정보변경]↑
->>>>>>> 1db914ce7694b4f415c66b0ae36890f3bc74b758
 
 
 @app.route('/sign_in', methods=['POST'])
@@ -298,20 +284,12 @@ def getComment():
     token_chk()
 
     now_mbti = request.args.get('now_mbti')
-<<<<<<< HEAD
-    print("아아", now_mbti);
-    all_comment = list(db.comment.find({'now_mbti': now_mbti}, {'_id': False}))
-    # for alls in all_comment:
-    #     print(alls)
-    print(all_comment)
-=======
     all_comment = list(db.comment.find({'now_mbti':now_mbti},{'_id':False}))
     for alls in all_comment:
         info = db.users.find_one({'username':alls['user_name']})
         img_src=info['profile_pic_real']
         alls['img_src'] = img_src
 
->>>>>>> 1db914ce7694b4f415c66b0ae36890f3bc74b758
     return jsonify({'msg': all_comment})
 
 
