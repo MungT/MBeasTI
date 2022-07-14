@@ -120,6 +120,7 @@ def sign_up():
         "password": password_hash,  # 비밀번호
         "nickname": nickname_receive,  # 닉네임
         "profile_name": username_receive,  # 프로필 이름 기본값은 아이디
+        "result_mbti": "", # mbti 칸
         "profile_pic": "",  # 프로필 사진 파일 이름
         "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
@@ -303,7 +304,7 @@ def index5():
 
 @app.route('/modified_profile')
 def modified_profile():
-    return render_template('userpage.html')
+    return render_template('user.html')
 
 # -------------------------  닉네임 가져오기    ----------------------------------------------------
 
