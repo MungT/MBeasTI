@@ -159,24 +159,44 @@ def check_dup_nick():
 
 @app.route('/update_profile', methods=['POST'])
 def save_img():
+    # 쿠키에서 토큰 꺼내오기
     token_receive = request.cookies.get('mytoken')
     try:
+        # 토큰 decode 하기
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         username = payload["id"]
-        nickname_receive = request.form["nickname_give"]
+        user_info = db.users.find_one({'username': username}, {'_id': False})
+        origin_nickname = user_info['nickname']
+        # 클라 nickname / about 저장
+        if request.form["nickname_give"] == "":
+            nickname_receive = origin_nickname
+        else:
+            nickname_receive = request.form["nickname_give"]
         about_receive = request.form["about_give"]
         new_doc = {
             "nickname": nickname_receive,
             "profile_info": about_receive
         }
+
         if 'file_give' in request.files:
             file = request.files["file_give"]
+            print(file)
             filename = secure_filename(file.filename)
+            print(filename)
+
+            # 사진의 확장자명 ( jpg 등 )
             extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{username}.{extension}"
-            file.save("./static/" + file_path)
+            print(extension)
+
+            #DB에 저장할 유저명을 붙인 이미지 파일명
+            # 접속자 아이디 + 확장자명 ( profile_pics/ + {qwe123}.{jpg} )
+            file_path = f"profile_pics/{filename}"
+            print(file_path)
+            #파일명
             new_doc["profile_pic"] = filename
+            #이미지 경로
             new_doc["profile_pic_real"] = file_path
+
         db.users.update_one({'username': payload['id']}, {'$set': new_doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
