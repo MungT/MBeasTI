@@ -2,69 +2,86 @@
 <html lang="ko">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <link href="https://fonts.googleapis.com/css2?family=Black+And+White+Picture&family=Black+Han+Sans&family=Nanum+Brush+Script&family=Nanum+Myeongjo&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-  <link rel="stylesheet" href="../static/css/result.css">
+    <link href="https://fonts.googleapis.com/css2?family=Black+And+White+Picture&family=Black+Han+Sans&family=Nanum+Brush+Script&family=Nanum+Myeongjo&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="../static/css/result.css">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script defer src="../static/js/result.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script defer src="../static/js/result.js"></script>
+    <!-- jquery-cookie 로그아웃 기능 구현 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
-
-  <title>MBeasTI | Home</title>
+    <title>MBeasTI | Home</title>
 </head>
 <body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-end">
+        <div class="navbar-item">
+            <div class="buttons">
+                <a href="user" class="button is-dark">
+                    <strong>회원 정보 변경</strong>
+                </a>
+                <a onclick="sign_out()" class="button is-light">
+                    로그아웃
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+</nav>
 
-  <div class="content-wrap">
+<div class="content-wrap">
     <h1 class="title">M BeasT I</h1>
     <section class="section01">
-      <div class="container">
-        <h2><span class="user_mbti">{{ mbti_list['mc_flag'] }}</span>을(를) 위한 동물 추천</h2>
-        <figure>
-          <img src="../static/img/{{ mbti_list['mc_file_name'] }}" alt="{{ mbti_list['mc_flag'] }}">
-          <figcaption>
-            <p>{{ mbti_list['mc_comment'] }}</p>
-          </figcaption>
-        </figure>
-      </div>
+        <div class="container">
+            <h2><span class="user_mbti">{{ mbti_list['mc_flag'] }}</span>을(를) 위한 동물 추천</h2>
+            <figure>
+                <img src="../static/img/{{ mbti_list['mc_file_name'] }}" alt="{{ mbti_list['mc_flag'] }}">
+                <figcaption>
+                    <p>{{ mbti_list['mc_comment'] }}</p>
+                </figcaption>
+            </figure>
+        </div>
     </section>
 
     <section class="section02">
-      <div class="container">
-        <div class="section02-write-box">
-          <input type="hidden" class="user-name" data-name="{{ user_info }}"/>
-          <textarea class="comment" rows="5" cols="125" placeholder="댓글 내용을 입력하세요."></textarea>
-          <button class="button is-dark submit">등록</button>
-          <input type="hidden" class="modi-time" data-time=""/>
-          <input type="hidden" class="modi-name" data-name=""/>
+        <div class="container">
+            <div class="section02-write-box">
+                <input type="hidden" class="user-name" data-name="{{ user_info }}"/>
+                <textarea class="comment" rows="5" cols="125" placeholder="댓글 내용을 입력하세요."></textarea>
+                <button class="button is-dark submit">등록</button>
+                <input type="hidden" class="modi-time" data-time=""/>
+                <input type="hidden" class="modi-name" data-name=""/>
+            </div>
+            <div class="box comment-list">
+                <!--          <article class="media">-->
+                <!--            <div class="media-left">-->
+                <!--              <figure class="image is-64x64">-->
+                <!--                <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">-->
+                <!--              </figure>-->
+                <!--            </div>-->
+                <!--            <div class="media-content">-->
+                <!--              <div class="content">-->
+                <!--                <p>-->
+                <!--                  <strong>John Smith</strong> <small>@johnsmith</small> <small>31m</small>-->
+                <!--                  <br>-->
+                <!--                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla egestas. Nullam condimentum luctus turpis.-->
+                <!--                </p>-->
+                <!--                <div class="field is-grouped">-->
+                <!--                  <p class="control"><button class="button is-link">Update</button></p>-->
+                <!--                  <p class="control"><button class="button is-danger del-btn">Delete</button></p>-->
+                <!--                </div>-->
+                <!--              </div>-->
+                <!--            </div>-->
+                <!--          </article>-->
+            </div>
         </div>
-        <div class="box comment-list">
-<!--          <article class="media">-->
-<!--            <div class="media-left">-->
-<!--              <figure class="image is-64x64">-->
-<!--                <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">-->
-<!--              </figure>-->
-<!--            </div>-->
-<!--            <div class="media-content">-->
-<!--              <div class="content">-->
-<!--                <p>-->
-<!--                  <strong>John Smith</strong> <small>@johnsmith</small> <small>31m</small>-->
-<!--                  <br>-->
-<!--                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla egestas. Nullam condimentum luctus turpis.-->
-<!--                </p>-->
-<!--                <div class="field is-grouped">-->
-<!--                  <p class="control"><button class="button is-link">Update</button></p>-->
-<!--                  <p class="control"><button class="button is-danger del-btn">Delete</button></p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </article>-->
-        </div>
-      </div>
     </section>
-  </div>
+</div>
 
 </body>
 </html>

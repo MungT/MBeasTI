@@ -4,6 +4,15 @@ $(document).ready(function(){
   getComment();
 })
 
+// result 페이지 로그아웃 기능
+function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = "/login"
+        }
+
+
+
 //댓글을 불러오는 함수입니다.
 function getComment(){
   $.ajax({
@@ -18,12 +27,14 @@ function getComment(){
       for(let i=(rows.length-1); i>-1; i--){
         let dataTime = rows[i].data_time;
         let userName = rows[i].user_name;
+        let imgSrc = rows[i].img_src;
+        console.log(imgSrc);
         let comment = rows[i].comment_receive;
         comment = comment.replaceAll('\n','<br/>');
         let temp_html=`<article class="media">
                         <div class="media-left">
                           <figure class="image is-64x64">
-                            <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
+                            <img src="/static/img/${imgSrc}" alt="Image">
                           </figure>
                         </div>
                         <div class="media-content">
