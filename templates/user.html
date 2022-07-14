@@ -33,22 +33,41 @@
             alert('로그아웃!')
             window.location.href = "/login"
         }
+        $(document).ready(function(){
+          $(".user_modify_btn").on({
+           click:function(){
+             $.ajax({
+               url:'/user_change',
+               type:'post',
+               data:{nickname_give:$(".user_nickname").val(), userid_give:$(".user_id").val()},
+               success:function(result){
+                 alert(result.msg);
+               }
+             })
+           }
+         })
+        })
+
     </script>
 </head>
 <body>
-<!-- 바디 다음 코드 작성하면, 브라우저 탑 쪽 배치됨 / -->
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-end">
-        <div class="navbar-item">
-            <div class="buttons">
-                <a class="button is-dark">
-                    <strong>회원 정보 변경</strong>
-                </a>
-                <a onclick="sign_out()" class="button is-light">
-                    로그아웃
-                </a>
-            </div>
-        </div>
-    </div>
-    </div>
+  <a class="button is-dark">
+      <strong>회원 정보 변경</strong>
+  </a>
+  <a onclick="sign_out()" class="button is-light">
+      로그아웃
+  </a>
+
+  <label for="user_nickname">닉네임</label>
+  <input type="text" id="user_nickname" class="user_nickname" value="{{ user_info['nickname'] }}"/>
+  <input type="hidden" class="user_id" value="{{ user_info['username'] }}"/>
+  <button class="user_modify_btn">정보 변경</button>
+
+  <form action="file_upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <input type="hidden" name="user_id" value="{{ user_info['username'] }}"/>
+        <input type="submit" value="제출하기"/>
+    </form>
 </nav>
+</body>
+</html>

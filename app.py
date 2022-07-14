@@ -73,18 +73,42 @@ def login():
     return render_template('login.html', msg=msg)
 
 
-@app.route('/user/<username>')
-def user(username):
+#---------------------------------------------------------------------------원호[회원정보변경]↓
+@app.route('/user')
+def user():
     # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
     token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    user_id = payload["id"]
+    user_info = db.users.find_one({"username": user_id}, {"_id": False})
 
-        user_info = db.users.find_one({"username": username}, {"_id": False})
-        return render_template('user.html', user_info=user_info, status=status)
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+    return render_template('user.html', user_info=user_info)
+
+@app.route('/user_change', methods=['POST'])
+def user_change():
+    nick_name = request.form['nickname_give']
+    user_id = request.form['userid_give']
+
+    db.users.update_one({"username":user_id},{'$set':{'nickname':nick_name}})
+
+    return jsonify({'msg': '수정완료'})
+@app.route("/file_upload", methods=["POST"])
+def file_upload():
+    print("들어오았")
+    # if request.method == "POST":
+    nick_name = request.form['user_id']
+    f = request.files['file']
+    fileName = f.filename
+    filenameRsplit = fileName.rsplit('.')
+    newFileName = filenameRsplit[0]+'_'+ datetime.now().strftime('%Y%m%d%H%M%S%f') +'.'+filenameRsplit[1]
+
+    db.users.update_one({"username":nick_name},{'$set':{'profile_pic_real':secure_filename(newFileName)}})
+
+    f.save('./static/img/'+secure_filename(newFileName))
+    return redirect(url_for("index"))
+    # else:
+    #     return render_template('index.html')
+#---------------------------------------------------------------------------원호[회원정보변경]↑
 
 
 @app.route('/sign_in', methods=['POST'])
@@ -224,11 +248,12 @@ def getComment():
     token_chk()
 
     now_mbti = request.args.get('now_mbti')
-    print("아아",now_mbti);
     all_comment = list(db.comment.find({'now_mbti':now_mbti},{'_id':False}))
-    # for alls in all_comment:
-    #     print(alls)
-    print(all_comment)
+    for alls in all_comment:
+        info = db.users.find_one({'username':alls['user_name']})
+        img_src=info['profile_pic_real']
+        alls['img_src'] = img_src
+
     return jsonify({'msg': all_comment})
 
 
